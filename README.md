@@ -54,16 +54,52 @@ Instructions for deploying the application to Render.com will be added here.
 
 ## Running Tests
 
-```bash
-# Run all integration tests
-pytest tests/
+### Setup
 
-# Run with verbose output
-pytest tests/ -v
+1. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. Configure environment variables:
+   ```bash
+   cp .env.example .env
+   # Edit .env and add your API keys
+   ```
+
+3. Set AI provider API key:
+   ```bash
+   # For OpenAI
+   export OPENAI_API_KEY=sk-...
+
+   # OR for Anthropic
+   export ANTHROPIC_API_KEY=sk-ant-...
+   ```
+
+### Run Tests
+
+```bash
+# Run all tests
+pytest
+
+# Run only unit tests (no AI calls)
+pytest -m "not integration"
+
+# Run integration tests (with real AI provider)
+pytest -m integration
+
+# Run with coverage report
+pytest --cov=tests --cov-report=html
 
 # Run specific test file
-pytest tests/test_api.py -v
+pytest tests/test_basic_import.py -v
 ```
+
+### Test Structure
+
+- `tests/test_basic_import.py` - Package import validation
+- `tests/test_analyzer_integration.py` - End-to-end integration tests
+- `tests/fixtures/` - Sample Excel files for testing
 
 ## Environment Variables
 
