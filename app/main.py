@@ -13,18 +13,26 @@ from fastapi.templating import Jinja2Templates
 
 from app.constants import (
     ALLOWED_FILE_EXTENSIONS,
-    MAX_FILE_SIZE_BYTES,
-    MAX_FILE_SIZE_MB,
+    APP_TITLE,
+    APP_VERSION,
     DEFAULT_MODEL,
     DEFAULT_PROVIDER,
     ENV_MODEL,
     ENV_PROVIDER,
+    ERROR_ANALYSIS_FAILED,
+    ERROR_FILE_TOO_LARGE,
+    ERROR_INVALID_FILE_TYPE,
+    ERROR_NO_FILE_CONTENT,
+    ERROR_NO_FILE_PROVIDED,
+    ERROR_UNEXPECTED,
+    MAX_FILE_SIZE_BYTES,
+    MAX_FILE_SIZE_MB,
 )
 from app.models import AnalyzeResponse, HealthResponse
 from app.services.analyzer import AnalyzerService
 from template_sense.errors import AIProviderError
 
-app = FastAPI(title="Template Sense Integration API")
+app = FastAPI(title=APP_TITLE)
 templates = Jinja2Templates(directory=str(Path(__file__).parent / "templates"))
 
 analyzer_service = AnalyzerService()
@@ -37,7 +45,7 @@ def _validate_file(upload: UploadFile) -> None:
     if extension not in ALLOWED_FILE_EXTENSIONS:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Invalid file type. Allowed extensions: {', '.join(ALLOWED_FILE_EXTENSIONS)}",
+            detail=ERROR_INVALID_FILE_TYPE.format(extensions=", ".join(ALLOWED_FILE_EXTENSIONS)),
         )
 
 
@@ -48,13 +56,13 @@ async def _save_upload_to_temp(upload: UploadFile) -> Path:
     if not content:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="No file content received.",
+            detail=ERROR_NO_FILE_CONTENT,
         )
 
     if len(content) > MAX_FILE_SIZE_BYTES:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"File is too large. Maximum allowed size is {MAX_FILE_SIZE_MB} MB.",
+            detail=ERROR_FILE_TOO_LARGE.format(max_size=MAX_FILE_SIZE_MB),
         )
 
     suffix = Path(upload.filename or "").suffix
@@ -84,7 +92,7 @@ async def health() -> HealthResponse:
     model = os.getenv(ENV_MODEL, DEFAULT_MODEL)
     return HealthResponse(
         status="ok",
-        version="1.0.0",
+        version=APP_VERSION,
         provider=provider,
         model=model,
     )
@@ -97,7 +105,7 @@ async def analyze(file: UploadFile = File(...)) -> JSONResponse:
     if not file.filename:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="No file provided.",
+            detail=ERROR_NO_FILE_PROVIDED,
         )
 
     _validate_file(file)
@@ -121,7 +129,7 @@ async def analyze(file: UploadFile = File(...)) -> JSONResponse:
     except Exception as exc:  # noqa: BLE001
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to analyze template. Please try again later.",
+            detail=ERROR_ANALYSIS_FAILED,
         ) from exc
     finally:
         if temp_path and temp_path.exists():
@@ -153,7 +161,7 @@ async def unhandled_exception_handler(
     error_response = AnalyzeResponse(
         success=False,
         data=None,
-        error="An unexpected error occurred. Please try again later.",
+        error=ERROR_UNEXPECTED,
     )
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

@@ -17,6 +17,16 @@ DEFAULT_PROVIDER: str = "openai"
 DEFAULT_MODEL: str = "gpt-4o-mini"
 DEFAULT_LOG_LEVEL: str = "INFO"
 
+APP_VERSION: str = "1.0.0"
+APP_TITLE: str = "Template Sense Integration API"
+
+ERROR_NO_FILE_CONTENT: str = "No file content received."
+ERROR_FILE_TOO_LARGE: str = "File is too large. Maximum allowed size is {max_size} MB."
+ERROR_NO_FILE_PROVIDED: str = "No file provided."
+ERROR_INVALID_FILE_TYPE: str = "Invalid file type. Allowed extensions: {extensions}"
+ERROR_ANALYSIS_FAILED: str = "Failed to analyze template. Please try again later."
+ERROR_UNEXPECTED: str = "An unexpected error occurred. Please try again later."
+
 DEFAULT_FIELD_DICTIONARY: dict[str, dict[str, str]] = {
     "headers": {
         "invoice_number": "Invoice number",

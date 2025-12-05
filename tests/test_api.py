@@ -18,8 +18,9 @@ def sample_file_path() -> Path:
     return Path(__file__).parent / "fixtures" / "sample_template.xlsx"
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture
 def mock_analyzer(monkeypatch):
+    """Mock the analyzer service for success case testing."""
     def _mock_analyze(file_path: str):
         return {
             "status": "ok",
@@ -43,7 +44,8 @@ def test_root_returns_html():
     assert "text/html" in response.headers.get("content-type", "")
 
 
-def test_analyze_success(sample_file_path):
+def test_analyze_success(sample_file_path, mock_analyzer):
+    """Test successful file analysis with mocked analyzer."""
     with sample_file_path.open("rb") as file_handle:
         response = client.post("/analyze", files={"file": (sample_file_path.name, file_handle)})
 

@@ -43,7 +43,7 @@ def field_dictionary():
 
 
 @pytest.fixture
-def api_key():
+def api_key(validate_environment):
     """Get AI provider API key from environment."""
     key = os.getenv("OPENAI_API_KEY") or os.getenv("ANTHROPIC_API_KEY")
     if not key:
