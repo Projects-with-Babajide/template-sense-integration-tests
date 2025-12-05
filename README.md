@@ -1,6 +1,7 @@
 # Template Sense Integration Tests
 
-Integration testing environment for the Template Sense package.
+Integration testing environment for the Template Sense package with a FastAPI UI for
+analyzing Excel templates.
 
 ## Overview
 
@@ -48,6 +49,32 @@ uvicorn app.main:app --reload --port 8000
 
 The application will be available at `http://localhost:8000`.
 
+### API Endpoints
+
+- `GET /` - Renders a Pico CSS-powered HTML form for uploading Excel files (.xlsx or .xls).
+- `GET /health` - Health check returning status, configured AI provider, and model.
+- `POST /analyze` - Accepts a multipart file upload, validates extension/size (max 10 MB),
+  and returns extracted template metadata as JSON.
+
+### Environment Variables
+
+The FastAPI app reads the following variables (see `.env.example`):
+
+- `TEMPLATE_SENSE_AI_PROVIDER` - AI provider to use (default: `openai`).
+- `TEMPLATE_SENSE_AI_MODEL` - Provider-specific model (default: `gpt-4o-mini`).
+- `TEMPLATE_SENSE_LOG_LEVEL` - Logging level (`INFO` by default).
+- `PORT` - Port for local development (default `8000`).
+- `OPENAI_API_KEY` or `ANTHROPIC_API_KEY` - Provider credentials required by
+  `template-sense`.
+
+### Using the Web UI
+
+1. Start the server with `uvicorn app.main:app --reload --port 8000`.
+2. Open `http://localhost:8000` in your browser.
+3. Upload an Excel file (`.xlsx` or `.xls`, up to 10 MB).
+4. View the extracted JSON metadata in the on-page results area. Errors are displayed in a
+   friendly alert.
+
 ## Render Deployment
 
 Instructions for deploying the application to Render.com will be added here.
@@ -94,6 +121,10 @@ pytest --cov=tests --cov-report=html
 # Run specific test file
 pytest tests/test_basic_import.py -v
 ```
+
+#### Troubleshooting
+
+- If you see `ModuleNotFoundError: No module named "fastapi"` during test collection, ensure you ran `pip install -r requirements.txt` inside your virtual environment before invoking `pytest`.
 
 ### Test Structure
 

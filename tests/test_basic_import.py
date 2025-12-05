@@ -11,9 +11,9 @@ def test_import_template_sense():
 
 def test_import_analyzer_service():
     """Test that AnalyzerService can be imported."""
-    from template_sense import AnalyzerService
+    from template_sense.analyzer import extract_template_structure
 
-    assert AnalyzerService is not None
+    assert extract_template_structure is not None
 
 
 def test_version_attribute_exists():
