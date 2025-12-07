@@ -122,7 +122,7 @@ This application is configured for automatic deployment to Render.com using the 
 
 The `render.yaml` file configures:
 - **Service type:** Web service
-- **Runtime:** Python 3.13
+- **Runtime:** Python
 - **Plan:** Free tier (suitable for testing and demos)
 - **Build command:** `pip install -r requirements.txt`
 - **Start command:** `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
