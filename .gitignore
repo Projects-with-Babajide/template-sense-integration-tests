@@ -56,3 +56,7 @@ htmlcov/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+# Claude Code
+.claude/command-output/
+.claude/settings.local.json
