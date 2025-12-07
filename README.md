@@ -77,7 +77,73 @@ The FastAPI app reads the following variables (see `.env.example`):
 
 ## Render Deployment
 
-Instructions for deploying the application to Render.com will be added here.
+This application is configured for automatic deployment to Render.com using the `render.yaml` Blueprint configuration.
+
+### Prerequisites
+
+- A Render.com account (free tier supported)
+- GitHub repository connected to Render
+- AI provider API key (OpenAI or Anthropic)
+
+### Deployment Steps
+
+1. **Connect Repository to Render**
+   - Log in to [Render.com](https://render.com)
+   - Click "New +" and select "Blueprint"
+   - Connect your GitHub account if not already connected
+   - Select this repository: `Projects-with-Babajide/template-sense-integration-tests`
+   - Render will automatically detect the `render.yaml` file
+
+2. **Configure Environment Variables**
+
+   In the Render dashboard, navigate to your service and set these environment variables:
+
+   **Required:**
+   - `TEMPLATE_SENSE_AI_PROVIDER` - Set to `openai` or `anthropic`
+   - `OPENAI_API_KEY` - Your OpenAI API key (if using OpenAI)
+   - `ANTHROPIC_API_KEY` - Your Anthropic API key (if using Anthropic)
+
+   **Optional:**
+   - `TEMPLATE_SENSE_AI_MODEL` - Specific model to use (e.g., `gpt-4o-mini`, `claude-3-5-sonnet-20241022`)
+   - `TEMPLATE_SENSE_LOG_LEVEL` - Set to `DEBUG`, `INFO`, `WARNING`, or `ERROR` (default: `INFO`)
+
+3. **Deploy from Main Branch**
+   - Render will automatically deploy when you push to the `main` branch
+   - Manual deploys can be triggered from the Render dashboard
+   - Build time: ~2-3 minutes on free tier
+
+4. **Access Your Live Application**
+   - Once deployed, Render provides a public HTTPS URL
+   - Format: `https://template-sense-integration-tests.onrender.com`
+   - Health check endpoint: `https://your-app.onrender.com/health`
+   - Web UI: `https://your-app.onrender.com/`
+
+### Configuration Details
+
+The `render.yaml` file configures:
+- **Service type:** Web service
+- **Runtime:** Python 3.13
+- **Plan:** Free tier (suitable for testing and demos)
+- **Build command:** `pip install -r requirements.txt`
+- **Start command:** `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+- **Health check:** `/health` endpoint for automatic health monitoring
+- **Auto-deploy:** Enabled for `main` branch
+
+### Troubleshooting
+
+**Build Failures:**
+- Verify `requirements.txt` includes all dependencies
+- Check Python version compatibility (3.10+ required)
+
+**Deployment Issues:**
+- Ensure environment variables are set correctly in Render dashboard
+- Check that at least one AI provider API key is configured
+- Verify the health check endpoint returns 200 OK
+
+**Free Tier Limitations:**
+- Service may spin down after 15 minutes of inactivity
+- First request after spin-down may take 30-60 seconds to respond
+- Consider upgrading to a paid plan for production use
 
 ## Running Tests
 
