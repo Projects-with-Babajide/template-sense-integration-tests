@@ -40,7 +40,9 @@ class AnalyzerService:
         ai_model: str | None = None,
         field_dictionary: dict[str, list[str]] | None = None,
     ) -> None:
-        self.ai_provider = (ai_provider or os.getenv(ENV_PROVIDER) or DEFAULT_PROVIDER).lower()
+        self.ai_provider = (
+            ai_provider or os.getenv(ENV_PROVIDER) or DEFAULT_PROVIDER
+        ).lower()
         self.ai_model = ai_model or os.getenv(ENV_MODEL) or DEFAULT_MODEL
         self.field_dictionary = field_dictionary or DEFAULT_FIELD_DICTIONARY
 

@@ -8,9 +8,6 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, File, HTTPException, Request, UploadFile, status
-
-# Load environment variables from .env file
-load_dotenv()
 from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
@@ -36,6 +33,9 @@ from app.models import AnalyzeResponse, HealthResponse
 from app.services.analyzer import AnalyzerService
 from template_sense.errors import AIProviderError
 
+# Load environment variables from .env file
+load_dotenv()
+
 app = FastAPI(title=APP_TITLE)
 templates = Jinja2Templates(directory=str(Path(__file__).parent / "templates"))
 
@@ -49,7 +49,9 @@ def _validate_file(upload: UploadFile) -> None:
     if extension not in ALLOWED_FILE_EXTENSIONS:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=ERROR_INVALID_FILE_TYPE.format(extensions=", ".join(ALLOWED_FILE_EXTENSIONS)),
+            detail=ERROR_INVALID_FILE_TYPE.format(
+                extensions=", ".join(ALLOWED_FILE_EXTENSIONS)
+            ),
         )
 
 

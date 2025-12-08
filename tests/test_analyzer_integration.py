@@ -10,7 +10,6 @@ from template_sense.errors import (
     AIProviderError,
     ExtractionError,
     FileValidationError,
-    InvalidFieldDictionaryError,
     UnsupportedFileTypeError,
 )
 
@@ -100,7 +99,14 @@ def test_error_handling_missing_file(field_dictionary, api_key):
     provider = "openai" if os.getenv("OPENAI_API_KEY") else "anthropic"
     analyzer = AnalyzerService(ai_provider=provider)
 
-    with pytest.raises((FileNotFoundError, FileValidationError, UnsupportedFileTypeError, ExtractionError)):
+    with pytest.raises(
+        (
+            FileNotFoundError,
+            FileValidationError,
+            UnsupportedFileTypeError,
+            ExtractionError,
+        )
+    ):
         analyzer.analyze(file_path="/nonexistent/file.xlsx")
 
 
@@ -112,7 +118,9 @@ def test_error_handling_invalid_file(tmp_path, field_dictionary, api_key):
     provider = "openai" if os.getenv("OPENAI_API_KEY") else "anthropic"
     analyzer = AnalyzerService(ai_provider=provider)
 
-    with pytest.raises((ExtractionError, FileValidationError, UnsupportedFileTypeError)):
+    with pytest.raises(
+        (ExtractionError, FileValidationError, UnsupportedFileTypeError)
+    ):
         analyzer.analyze(file_path=str(invalid_file))
 
 

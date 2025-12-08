@@ -1,7 +1,6 @@
 """Basic import and version tests for template-sense package."""
 
 
-
 def test_import_template_sense():
     """Test that template_sense package can be imported."""
     import template_sense

@@ -19,8 +19,18 @@ def pytest_configure(config):
 
 
 @pytest.fixture(scope="session")
-def validate_environment():
-    """Validate required environment variables are set."""
+def validate_environment(request):
+    """Validate required environment variables are set.
+
+    Only validates when running integration tests.
+    """
+    # Check if we're running integration tests
+    marker_expr = request.config.getoption("-m", default="")
+
+    # Skip validation if explicitly excluding integration tests
+    if marker_expr == "not integration":
+        return
+
     has_openai = bool(os.getenv("OPENAI_API_KEY"))
     has_anthropic = bool(os.getenv("ANTHROPIC_API_KEY"))
 

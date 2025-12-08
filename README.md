@@ -1,5 +1,7 @@
 # Template Sense Integration Tests
 
+[![CI](https://github.com/Projects-with-Babajide/template-sense-integration-tests/workflows/CI/badge.svg)](https://github.com/Projects-with-Babajide/template-sense-integration-tests/actions)
+
 Integration testing environment for the Template Sense package with a FastAPI UI for
 analyzing Excel templates.
 
@@ -197,6 +199,53 @@ pytest tests/test_basic_import.py -v
 - `tests/test_basic_import.py` - Package import validation
 - `tests/test_analyzer_integration.py` - End-to-end integration tests
 - `tests/fixtures/` - Sample Excel files for testing
+
+## Continuous Integration
+
+This project uses GitHub Actions for automated testing and code quality checks on every push and pull request.
+
+### Workflow Overview
+
+Every push and pull request to the `main` branch triggers three jobs:
+
+1. **Code Quality** - Black formatting and Ruff linting checks (Python 3.12)
+2. **Unit Tests** - Fast tests without AI provider calls, run across Python 3.10, 3.11, 3.12, and 3.13
+3. **Integration Tests** - Full Template Sense integration with OpenAI (Python 3.12 only)
+
+The workflow uses pip caching to speed up dependency installation and runs tests in parallel where possible.
+
+### Status Badge
+
+The badge at the top of this README shows the current CI status:
+- **Passing** - All checks passed successfully
+- **Failing** - One or more checks failed
+- **In Progress** - Workflow currently running
+
+Click the badge to view detailed workflow runs and logs in the [Actions tab](https://github.com/Projects-with-Babajide/template-sense-integration-tests/actions).
+
+### Required GitHub Secrets
+
+For integration tests to pass in CI, the following GitHub Secret must be configured:
+
+- `OPENAI_API_KEY` - OpenAI API key for Template Sense integration tests
+
+**To add secrets:**
+1. Go to repository Settings → Secrets and variables → Actions
+2. Click "New repository secret"
+3. Add `OPENAI_API_KEY` with your API key value
+
+See [GitHub Secrets documentation](https://docs.github.com/en/actions/security-guides/encrypted-secrets) for detailed setup instructions.
+
+### Workflow Details
+
+**Jobs:**
+- **lint**: Runs Black (formatting check) and Ruff (linting) on Python 3.12
+- **test**: Runs unit tests on Python 3.10, 3.11, 3.12, and 3.13 in parallel
+- **integration-test**: Runs integration tests with real AI provider on Python 3.12 (only after unit tests pass)
+
+**Artifacts:**
+- Coverage reports are uploaded as artifacts for each test run
+- Artifacts are retained for 30 days and can be downloaded from workflow run pages
 
 ## Environment Variables
 
